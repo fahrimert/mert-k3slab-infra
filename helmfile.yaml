@@ -38,7 +38,7 @@ releases:
     createNamespace: true
     values:
       - gitlabUrl: "https://gitlab.com/"
-        runnerRegistrationToken: "{{ requiredEnv 'GITLAB_RUNNER_TOKEN' }}"
+        runnerRegistrationToken: "{{ env "GITLAB_RUNNER_TOKEN" }}"
         rbac:
           create: true
         runners:

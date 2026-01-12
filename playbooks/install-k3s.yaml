@@ -19,17 +19,19 @@
     - name: GitLab Registry Secret Olustur
       environment:
             KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-      shell: >
-        kubectl create secret docker-registry gitlab-auth
-            --docker-server=registry.gitlab.com
-            --docker-username=Vimadd
-            --docker-password={{ gitlab_token }}
-            -n default
+      shell: | 
+        kubectl create secret docker-registry gitlab-auth \ 
+            --docker-server=registry.gitlab.com \
+            --docker-username=Vimadd \ 
+            --docker-password={{ gitlab_token }} \ 
+            -n default \ 
             --dry-run=client -o yaml | kubectl apply -f -
       run_once: true
 - name: Local Kubeconfig Ayarı
   hosts: localhost
   connection: local
+  vars:
+    ansible_python_interpreter: python3
   tasks:
     - name: IP adresini düzelt (127.0.0.1 -> 192.168.56.10)
       replace:
@@ -37,9 +39,4 @@
         regexp: '127.0.0.1'
         replace: '192.168.56.10'
 
-    - name: ArgoCD Uygulama Manifestini Uygula
-          kubernetes.core.k8s:
-            kubeconfig: "../k3s.yaml"
-            state: present
-            src: "{{ playbook_dir }}/../argocd-apps.yaml"
 

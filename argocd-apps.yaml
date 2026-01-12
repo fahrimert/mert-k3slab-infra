@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://gitlab.com/Vimadd/cloud4next-mertk3slab-argocdpractice-nodeapp.git' # <--- GitLab Repo Adresin
+    repoURL: 'https://gitlab.com/Vimadd/cloud4next-mertk3slab-argocdpractice-nodeapp.git'
     targetRevision: main
     path: charts/my-node-app 
   destination:

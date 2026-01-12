@@ -1,0 +1,23 @@
+- name: ArgoCD Uygulama Yönetimi
+  hosts: localhost
+  connection: local
+  vars:
+    ansible_python_interpreter: python3
+    kubeconfig_path: "../k3s.yaml" 
+  
+  tasks:
+    - name: Kubeconfig dosyasının varlığını kontrol et
+      stat:
+        path: "{{ kubeconfig_path }}"
+      register: kubeconfig_file
+
+    - name: Kubeconfig bulunamazsa hata ver
+      fail:
+        msg: "Kubeconfig dosyası ({{ kubeconfig_path }}) bulunamadı. Önce k3s-setup.yml çalıştırılmalı."
+      when: not kubeconfig_file.stat.exists
+
+    - name: ArgoCD Uygulama Manifestini Uygula
+      kubernetes.core.k8s:
+        kubeconfig: "{{ kubeconfig_path }}"
+        state: present
+        src: "{{ playbook_dir }}/../argocd-apps.yaml"
