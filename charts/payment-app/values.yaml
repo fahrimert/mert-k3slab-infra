@@ -1,0 +1,14 @@
+replicaCount: 1
+
+image:
+  repository: payment-service
+  pullPolicy: Never  
+  tag: "v1"
+
+service:
+  type: ClusterIP
+  port: 5000
+
+env:
+  OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo.monitoring.svc.cluster.local:4318"
+  OTEL_SERVICE_NAME: "payment-service"

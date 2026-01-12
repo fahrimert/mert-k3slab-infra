@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-generator-filebeat
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-generator
+  template:
+    metadata:
+      labels:
+        app: log-generator
+    spec:
+      containers:
+      # 1. LOG GENERATOR
+      - name: generator
+        image: {{ .Values.generator.image }}
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            apk add --no-cache bash coreutils
+            mkdir -p /var/log/generated-logs
+            exec /bin/bash -c 'while true; do
+              if [ $((RANDOM % 10)) -gt 7 ]; then LEVEL="ERROR"; MSG="Veritabani baglantisi koptu!"; else LEVEL="INFO"; MSG="Odeme basariyla alindi"; fi;
+              echo "[@$(date -Iseconds)] [$LEVEL] User:$((RANDOM % 1000)) - $MSG" >> /var/log/generated-logs/app.log;
+              sleep 0.5;
+            done'
+        volumeMounts:
+        - name: shared-logs
+          mountPath: /var/log/generated-logs
+
+      # 2. FILEBEAT SIDECAR
+      - name: filebeat
+        image: {{ .Values.filebeat.image }}
+        args: ["-c", "/etc/filebeat.yml", "-e"]
+        securityContext:
+          runAsUser: 0
+        volumeMounts:
+        - name: config
+          mountPath: /etc/filebeat.yml
+          subPath: filebeat.yml
+          readOnly: true
+        - name: shared-logs
+          mountPath: /var/log/generated-logs
+          readOnly: true
+      
+      volumes:
+      - name: shared-logs
+        emptyDir: {}
+      - name: config
+        configMap:
+          name: filebeat-config

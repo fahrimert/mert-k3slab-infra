@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logstash-config
+data:
+  logstash.conf: |
+    input {
+      beats { port => 5044 }
+    }
+    filter {
+      grok { match => { "message" => "\[@%{TIMESTAMP_ISO8601:log_date}\] \[%{LOGLEVEL:log_level}\] User:%{INT:user_id} - %{GREEDYDATA:log_msg}" } }
+      date { match => [ "log_date", "ISO8601" ] }
+      mutate { convert => { "user_id" => "integer" } }
+    }
+    output {
+      elasticsearch {
+        hosts => ["http://elasticsearch:9200"]
+        index => "app-logs-filebeat-%{+YYYY.MM.dd}"
+      }
+      stdout { codec => rubydebug }
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: filebeat-config
+data:
+  filebeat.yml: |
+    filebeat.inputs:
+    - type: log
+      enabled: true
+      paths:
+        - /var/log/generated-logs/*.log
+    output.logstash:
+      hosts: ["logstash:5044"]

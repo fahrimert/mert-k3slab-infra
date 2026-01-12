@@ -1,0 +1,72 @@
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+  persistence:
+    enabled: false
+
+gateway:
+  enabled: false
+
+backend:
+  replicas: 0
+
+read:
+  replicas: 0
+
+write:
+  replicas: 0
+
+loki:
+  auth_enabled: false
+  
+  common:
+    path_prefix: /tmp/loki
+    replication_factor: 1
+    storage:
+      filesystem:
+        chunks_directory: /tmp/loki/chunks
+        rules_directory: /tmp/loki/rules
+    ring:
+      kvstore:
+        store: inmemory
+
+  storage_config:
+    boltdb_shipper:
+      active_index_directory: /tmp/loki/boltdb-shipper-active
+      cache_location: /tmp/loki/boltdb-shipper-cache
+      cache_ttl: 24h
+      shared_store: filesystem
+    filesystem:
+      directory: /tmp/loki/chunks
+
+  compactor:
+    working_directory: /tmp/loki/compactor
+    shared_store: filesystem
+    compaction_interval: 10m
+
+  ingester:
+    lifecycler:
+      ring:
+        kvstore:
+          store: inmemory
+        replication_factor: 1
+      final_sleep: 0s
+    chunk_idle_period: 5m
+    chunk_retain_period: 30s
+    wal:
+      dir: /tmp/loki/wal
+
+  schema_config:
+    configs:
+      - from: 2024-04-01
+        store: boltdb-shipper
+        object_store: filesystem
+        schema: v11
+        index:
+          prefix: index_
+          period: 24h
+
+  memberlist:
+    join_members:
+      - loki-memberlist

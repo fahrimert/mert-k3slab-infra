@@ -1,0 +1,35 @@
+- name: Sistem Hazırlığı (LGTM Stack İçin)
+  hosts: k3s_nodes
+  become: yes
+  tasks:
+    - name: Paket listesini güncelle ve gerekli araçları kur
+      apt:
+        name:
+          - curl
+          - wget
+          - git
+          - htop
+          - docker.io  
+        state: present
+        update_cache: yes
+
+    - name: Docker servisini başlat ve enable et
+      service:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Loki/Promtail için inotify limitlerini artır
+      sysctl:
+        name: fs.inotify.max_user_watches
+        value: '524288'
+        state: present
+        reload: yes
+
+    - name: inotify max user instances artır
+      sysctl:
+        name: fs.inotify.max_user_instances
+        value: '512'
+        state: present
+        reload: yes
+

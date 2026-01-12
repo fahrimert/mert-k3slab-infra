@@ -1,0 +1,80 @@
+repositories:
+  - name: grafana
+    url: https://grafana.github.io/helm-charts
+  - name: argo
+    url: https://argoproj.github.io/argo-helm
+  - name: gitlab
+    url: https://charts.gitlab.io
+  - name: prometheus-community
+    url: https://prometheus-community.github.io/helm-charts
+
+releases:
+  - name: kube-prometheus-sta
+    namespace: monitoring
+    createNamespace: true
+    chart: prometheus-community/kube-prometheus-stack
+    version: 56.6.2
+    values:
+      - values/monitoring/prometheus.yaml
+
+  - name: loki
+    namespace: monitoring
+    chart: grafana/loki
+    version: 5.43.3
+    values:
+      - values/monitoring/loki.yaml
+
+  - name: promtail
+    namespace: monitoring
+    chart: grafana/promtail
+    version: 6.15.5
+    values:
+      - values/monitoring/promtail.yaml
+
+  - name: gitlab-runner
+    namespace: gitlab-runner
+    chart: gitlab/gitlab-runner
+    version: 0.60.0 
+    createNamespace: true
+    values:
+      - gitlabUrl: "https://gitlab.com/"
+        runnerRegistrationToken: "{{ requiredEnv 'GITLAB_RUNNER_TOKEN' }}"
+        rbac:
+          create: true
+        runners:
+          privileged: true 
+          config: |
+            [[runners]]
+              [runners.kubernetes]
+                image = "alpine:latest"
+                privileged = true
+  - name: argocd
+    namespace: argocd
+    chart: argo/argo-cd
+    version: 5.51.6
+    createNamespace: true
+    hooks:
+      - events: ["postinstalled"]
+        command: "kubectl"
+        args: ["apply", "-f", "argocd-apps.yaml"] 
+    values:
+      - ./values/argocd/argocd.yaml
+  - name: tempo
+    namespace: monitoring
+    chart: grafana/tempo
+    version: 1.7.2
+    values:
+      - values/monitoring/tempo.yaml
+
+  - name: payment-app
+    namespace: default
+    chart: ./charts/payment-app
+    values:
+      - values/apps/payment-app.yaml
+
+#  - name: elk-stack
+  #  namespace: elk-stack
+   # chart: ./charts/elk-stack
+   # createNamespace: true # Namespace yoksa otomatik açsın
+   # values:
+   #  - ./charts/elk-stack/values.yaml

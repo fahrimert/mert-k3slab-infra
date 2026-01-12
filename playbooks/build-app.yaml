@@ -1,0 +1,30 @@
+---
+- name: Python Uygulamasını Build Et
+  hosts: k3s_nodes
+  become: yes
+  tasks:
+    - name: Kaynak kod klasörünü hazırla
+      file:
+        path: /opt/payment-app
+        state: directory
+        mode: '0755'
+
+    - name: Python kodlarını kopyala
+      copy:
+        src: ../src/payment-app/
+        dest: /opt/payment-app/
+
+    - name: Docker Image Build (payment-service:v1)
+      shell: docker build -t payment-service:v1 .
+      args:
+        chdir: /opt/payment-app/
+
+    - name: İmajı tar dosyası olarak kaydet
+      shell: docker save payment-service:v1 -o payment-service.tar
+      args:
+        chdir: /opt/payment-app/
+
+    - name: İmajı K3s (containerd) içine import et
+      shell: k3s ctr images import payment-service.tar
+      args:
+        chdir: /opt/payment-app/
