@@ -1,16 +1,29 @@
 - name: ArgoCD Uygulama Yönetimi
   hosts: localhost
   connection: local
+  become: true
   vars:
     ansible_python_interpreter: python3
     kubeconfig_path: "../k3s.yaml" 
   
   tasks:
+    - name: Bozuk Helmfile repository dosyasını kaldır (APT hatasını önlemek için)
+      ansible.builtin.file:
+        path: /etc/apt/sources.list.d/helmfile.list
+        state: absent
+      ignore_errors: true 
+
+    - name: Python kütüphanelerini APT ile yükle
+      ansible.builtin.apt:
+        name:
+          - python3-kubernetes
+          - python3-jsonpatch
+        state: present
+        update_cache: yes
     - name: Kubeconfig dosyasının varlığını kontrol et
       stat:
         path: "{{ kubeconfig_path }}"
       register: kubeconfig_file
-
     - name: Kubeconfig bulunamazsa hata ver
       fail:
         msg: "Kubeconfig dosyası ({{ kubeconfig_path }}) bulunamadı. Önce k3s-setup.yml çalıştırılmalı."
