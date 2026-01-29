@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: payment-app-alert
+  namespace: monitoring
+  labels:
+    release: kube-prometheus-stack
+spec:
+  groups:
+  - name: payment-app.rules
+    rules:
+    - alert: PaymentAppDown
+      expr: kube_deployment_status_replicas_available{deployment="payment-app"} == 0
+      for: 1m
+      labels:
+        severity: critical
+      annotations:
+        summary: " KRİTİK: Payment App Çöktü!"
+        description: "Payment App deployment'ında çalışan pod kalmadı. Müşteriler ödeme yapamıyor!"
