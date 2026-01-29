@@ -81,7 +81,7 @@ KUBECONFIG=./k3s.yaml kubectl port-forward -n elk-stack svc/kibana 5601:5601 --a
 
 # Payment App
 ```bash
-KUBECONFIG=./k3s.yaml  port-forward svc/payment-app 5000:5000
+KUBECONFIG=./k3s.yaml  kubectl --kubeconfig ./k3s.yaml port-forward svc/payment-app 5000:5000
 ```
 
 - **Payment App (Test Uygulaması)**  
@@ -112,7 +112,7 @@ GitLab Runner, kaynak koddaki değişiklikleri algılayıp build işlemini tamam
 
 # ArgoCD arayüzüne erişim
 ```bash
-KUBECONFIG=./k3s.yaml  port-forward svc/argocd-server -n argocd 8080:443
+KUBECONFIG=./k3s.yaml kubectl port-forward svc/argocd-server -n argocd 8080:443
 ```
 
 - **ArgoCD UI:** https://localhost:8080  
@@ -132,7 +132,7 @@ GitLab reposundan çekilip **ArgoCD** tarafından deploy edilen Node.js uygulama
 
 # Node.js uygulamasına erişim
 ```bash
-KUBECONFIG=./k3s.yaml port-forward svc/my-node-app 3000:3000
+KUBECONFIG=./k3s.yaml kubectl port-forward svc/my-node-app 3000:3000
 ```
 
 - **Uygulama Adresi:** http://localhost:3000
@@ -141,7 +141,7 @@ Bu adres ile uygulamanın ana sayfasını görebilirsiniz, kodu değiştirip pus
 
 # Kod değişikliği sonrası (imaj tag'i değişmediyse) Pod'ları yeni imajı çekmeye zorla
 ```bash
-KUBECONFIG=./k3s.yaml rollout restart deployment my-node-app -n default
+KUBECONFIG=./k3s.yaml kubectl rollout restart deployment my-node-app -n default
 ```
 
 ### CI/CD Akışı Özeti
