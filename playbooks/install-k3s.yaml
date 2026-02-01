@@ -16,17 +16,17 @@
         dest: ../k3s.yaml
         flat: yes
 
-    - name: GitLab Registry Secret Olustur
-      environment:
-            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
-      shell: | 
-        kubectl create secret docker-registry gitlab-auth \ 
-            --docker-server=registry.gitlab.com \
-            --docker-username=Vimadd \ 
-            --docker-password={{ gitlab_token }} \ 
-            -n default \ 
-            --dry-run=client -o yaml | kubectl apply -f -
-      run_once: true
+##    - name: GitLab Registry Secret Olustur
+##      environment:
+##            KUBECONFIG: /etc/rancher/k3s/k3s.yaml
+##      shell: | 
+##        kubectl create secret docker-registry gitlab-auth \ 
+##            --docker-server=registry.gitlab.com \
+##            --docker-username=Vimadd \ 
+##            --docker-password={{ gitlab_token }} \ 
+##            -n default \ 
+##            --dry-run=client -o yaml | kubectl apply -f -
+##      run_once: true
 - name: Local Kubeconfig Ayarı
   hosts: localhost
   connection: local

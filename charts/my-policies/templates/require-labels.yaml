@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: zorunlu-etiketler
+spec:
+  validationFailureAction: Enforce
+  background: true
+  rules:
+  - name: team-etiketi-kontrolu
+    match:
+      any:
+      - resources:
+          kinds:
+          - Pod
+    exclude:
+      any:
+      - resources:
+          namespaces:
+          - kyverno
+          - kube-system
+          - monitoring
+    validate:
+      message: "HOP HEMSERIM! ✋ 'team' etiketi olmayan podu içeri almam."
+      pattern:
+        metadata:
+          labels:
+            team: "?*"
