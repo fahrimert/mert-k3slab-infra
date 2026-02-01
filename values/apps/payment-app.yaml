@@ -7,3 +7,6 @@ image:
 env:
   OTEL_EXPORTER_OTLP_ENDPOINT: "http://tempo.monitoring.svc.cluster.local:4318"
   OTEL_SERVICE_NAME: "payment-service"
+
+serverless:
+  enabled: truep

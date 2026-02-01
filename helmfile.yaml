@@ -31,37 +31,37 @@ releases:
     version: 6.15.5
     values:
       - values/monitoring/promtail.yaml
-  - name: kyverno
-    namespace: kyverno
-    chart: kyverno/kyverno
-    version: 3.1.4
-    createNamespace: true
-    values:
-      - admissionController:
-          replicas: 1
-      - backgroundController:
-          replicas: 1
-      - cleanupController:
-          replicas: 1
-      - cleanupJobs:
-          admissionReports:
-            image:
-              registry: docker.io
-              repository: bitnami/kubectl
-              tag: latest
-          clusterAdmissionReports:
-            image:
-              registry: docker.io
-              repository: bitnami/kubectl
-              tag: latest
-      - reportsController:
-          replicas: 1
+  ## - name: kyverno
+  ##  namespace: kyverno
+  ##  chart: kyverno/kyverno
+  ##  version: 3.1.4
+  ##  createNamespace: true
+  ##  values:
+  ##    - admissionController:
+  ##        replicas: 1
+  ##    - backgroundController:
+  ##        replicas: 1
+  ##    - cleanupController:
+  ##        replicas: 1
+  ##    - cleanupJobs:
+  ##        admissionReports:
+  ##          image:
+  ##            registry: docker.io
+  ##            repository: bitnami/kubectl
+  ##            tag: latest
+  ##        clusterAdmissionReports:
+  ##          image:
+  ##            registry: docker.io
+  ##            repository: bitnami/kubectl
+  ##            tag: latest
+  ##    - reportsController:
+  ##        replicas: 1
           
-  - name: my-policies
-    namespace: kyverno
-    chart: ./charts/my-policies
-    needs:
-      - kyverno/kyverno
+  ##- name: my-policies
+  ##  namespace: kyverno
+  ##  chart: ./charts/my-policies
+  ##  needs:
+  ##    - kyverno/kyverno
   ##- name: gitlab-runner
   ##  namespace: gitlab-runner
   ##  chart: gitlab/gitlab-runner
@@ -97,11 +97,11 @@ releases:
    #  values:
    #    - values/monitoring/tempo.yaml
 
- #  - name: payment-app
- #    namespace: default
-  #   chart: ./charts/payment-app
-  #   values:
-  #     - values/apps/payment-app.yaml
+  - name: payment-app
+    namespace: default
+    chart: ./charts/payment-app
+    values:
+      - values/apps/payment-app.yaml
 
 
 #  - name: elk-stack
