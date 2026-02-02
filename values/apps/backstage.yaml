@@ -19,6 +19,11 @@ appConfig:
     catalog:
       rules:
       - allow: [Component, System, API, Resource, Location, Template, Group, User, Domain]
+    kubernetes:
+      serviceLocatorMethod:
+        type: 'multiTenant'
+      clusterLocatorMethods:
+        - type: 'inCluster'
     cors:
       origin: http://localhost:7007
       methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
