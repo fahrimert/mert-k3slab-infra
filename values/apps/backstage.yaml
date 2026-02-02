@@ -1,0 +1,55 @@
+
+appConfig:
+  app:
+    baseUrl: http://localhost:7007
+    title: Mert'in IDP Platformu
+  
+  backend:
+    baseUrl: http://localhost:7007
+    auth:
+      keys:
+        - secret: "cokgizlisifrecokgizlisifrecokgizlisifrecokgizlisifrecokgizlisifrecokgizlisifre"
+    database:
+      client: pg
+      connection:
+        host: ${POSTGRESQL_HOST}
+        port: ${POSTGRESQL_PORT}
+        user: ${POSTGRESQL_USER}
+        password: ${POSTGRESQL_PASSWORD}
+    cors:
+      origin: http://localhost:7007
+      methods: [GET, HEAD, PATCH, POST, PUT, DELETE]
+      credentials: true
+  auth:
+    environment: development
+    providers:
+      guest:
+        dangerouslyAllowOutsideDevelopment: true
+  
+  permission:
+    enabled: false
+ingress:
+  enabled: true
+  className: "traefik"
+  host: backstage.default.10.0.2.15.sslip.io
+
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "gizlisifre123"
+    username: "backstage"
+    password: "gizlisifre123"
+    database: "backstage_plugin_catalog"
+extraEnvVars:
+  - name: APP_CONFIG_backend_auth_keys_0_secret
+    value: "bu-cok-gizli-ve-sabit-bir-anahtardir-en-az-32-karakter-olsun"
+  
+  - name: APP_CONFIG_auth_providers_guest_dangerouslyAllowOutsideDevelopment
+    value: "true"
+
+  - name: APP_CONFIG_app_baseUrl
+    value: "http://localhost:7007"
+  - name: APP_CONFIG_backend_baseUrl
+    value: "http://localhost:7007"
+  - name: APP_CONFIG_backend_cors_origin
+    value: "http://localhost:7007"
