@@ -1,0 +1,21 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: devops-team
+  description: Altyapı ve Platformdan sorumlu efsane ekip.
+spec:
+  type: team
+  profile:
+    displayName: DevOps Team
+    email: mert@devops.com
+    picture: https://avatars.githubusercontent.com/u/1?v=4
+  children: []
+
+---
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: payment-system
+  description: Tüm ödeme ve faturalama işlemlerini yöneten sistem.
+spec:
+  owner: devops-team
