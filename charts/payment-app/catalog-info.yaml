@@ -4,7 +4,8 @@ metadata:
   name: payment-app
   description: Python ile yazılmış Serverless Ödeme Servisi
   annotations:
-    github.com/project-slug: 'mert/mert-k3slab-infra' 
+    github.com/project-slug: 'mert/mert-k3slab-infra'
+    backstage.io/kubernetes-id: payment-app 
   tags:
     - python
     - serverless
